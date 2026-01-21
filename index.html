@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ameena | Web Developer & AI Student</title>
+    
+    <!-- Google Fonts: Space Grotesk (Headings) & Outfit (Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =========================================
+           1. VARIABLES & RESET
+           ========================================= */
+        :root {
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --primary: #8b5cf6; /* Violet */
+            --accent: #d946ef;  /* Fuchsia */
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --font-head: 'Space Grotesk', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+
+        /* =========================================
+           2. UTILITIES & ANIMATIONS
+           ========================================= */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(139, 92, 246, 0.5);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: white;
+        }
+
+        .btn-outline:hover {
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        /* Scroll Reveal Animation Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =========================================
+           3. PRELOADER
+           ========================================= */
+        #preloader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100vh;
+            background: var(--bg-darker);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader-circle {
+            width: 50px; height: 50px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+            margin-bottom: 20px;
+        }
+
+        .loader-text {
+            font-family: var(--font-head);
+            letter-spacing: 2px;
+            font-size: 1.2rem;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* =========================================
+           4. NAVBAR
+           ========================================= */
+        nav {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 20px 0;
+            transition: 0.4s;
+        }
+
+        nav.scrolled {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 15px 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-head);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--accent);
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover::after { width: 100%; }
+
+        .hamburger { display: none; cursor: pointer; color: white; font-size: 1.5rem; }
+
+        /* =========================================
+           5. HERO SECTION
+           ========================================= */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-top: 80px;
+            overflow: hidden;
+        }
+
+        /* Background Glow Effect */
+        .glow-bg {
+            position: absolute;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, rgba(15,23,42,0) 70%);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+        }
+
+        .hero-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .hero-content {
+            flex: 1;
+            padding-right: 50px;
+        }
+
+        .hero-subtitle {
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .hero-title {
+            font-family: var(--font-head);
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 25px;
+        }
+
+        .hero-desc {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 35px;
+            max-width: 500px;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 20px;
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        .img-box {
+            position: relative;
+            width: 400px;
+            height: 400px;
+        }
+
+        .main-img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.1);
+            /* Placeholder gradient if image fails */
+            background: linear-gradient(to bottom, #2d3748, #1a202c); 
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Floating Tech Cards */
+        .tech-card {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .tech-card i { color: var(--accent); font-size: 1.2rem; }
+        .tc-1 { top: 40px; left: -20px; animation: float 5s ease-in-out infinite 1s; }
+        .tc-2 { bottom: 50px; right: -10px; animation: float 7s ease-in-out infinite 0.5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* =========================================
+           6. SECTIONS COMMON
+           ========================================= */
+        section { padding: 100px 0; }
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-header h2 { font-family: var(--font-head); font-size: 2.5rem; margin-bottom: 10px; }
+        .divider { width: 60px; height: 4px; background: var(--primary); margin: 0 auto; border-radius: 2px; }
+
+        /* =========================================
+           7. ABOUT & STATS
+           ========================================= */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .about-text p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .stat-box {
+            background: var(--glass);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+        }
+
+        .stat-box h3 { font-size: 2.5rem; color: var(--primary); font-family: var(--font-head); }
+        .stat-box p { font-size: 0.9rem; color: var(--text-muted); }
+
+        /* =========================================
+           8. SERVICES
+           ========================================= */
+        .bg-alt { background-color: var(--bg-darker); }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 35px 25px;
+            border-radius: 20px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            group: hover;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--primary);
+        }
+
+        .icon-circle {
+            width: 60px; height: 60px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .service-card:hover .icon-circle { background: var(--primary); color: white; }
+        .service-card h3 { margin-bottom: 15px; font-size: 1.3rem; }
+        .service-card p { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* =========================================
+           9. PROJECTS
+           ========================================= */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .project-card {
+            background: var(--bg-darker);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            transition: var(--transition);
+        }
+
+        .project-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+
+        .project-img-wrapper {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+        }
+
+        .project-img-wrapper img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: 0.5s;
+        }
+
+        .project-card:hover img { transform: scale(1.1); }
+
+        .project-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .project-card:hover .project-overlay { opacity: 1; }
+
+        .project-info { padding: 25px; }
+        .project-info h3 { margin-bottom: 10px; }
+        .project-info p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px; }
+        
+        .tags span {
+            font-size: 0.75rem;
+            background: rgba(255,255,255,0.05);
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-right: 5px;
+            color: var(--accent);
+        }
+
+        /* =========================================
+           10. SKILLS
+           ========================================= */
+        .skills-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .skill-item { margin-bottom: 25px; }
+        
+        .skill-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            width: 0; /* JS will animate this */
+            transition: width 1.5s ease-in-out;
+        }
+
+        /* =========================================
+           11. CONTACT & FOOTER
+           ========================================= */
+        .contact-box {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 50px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+
+        .contact-details h3 { font-size: 1.8rem; margin-bottom: 20px; }
+        .contact-item { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; color: var(--text-muted); }
+        .contact-item i { color: var(--accent); font-size: 1.2rem; }
+
+        .contact-form .form-group { margin-bottom: 20px; }
+        
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+        }
+
+        .contact-form input:focus, .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid var(--glass-border);
+            margin-top: 50px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* =========================================
+           12. RESPONSIVE
+           ========================================= */
+        @media (max-width: 900px) {
+            .hero-wrapper { flex-direction: column-reverse; text-align: center; padding-top: 40px; }
+            .hero-content { padding-right: 0; margin-top: 40px; }
+            .hero-btns { justify-content: center; }
+            .hero-title { font-size: 3rem; }
+            .contact-box { grid-template-columns: 1fr; padding: 30px; }
+            .about-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed; top: 0; right: -100%;
+                width: 70%; height: 100vh;
+                background: var(--bg-darker);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: 0.4s;
+                border-left: 1px solid var(--glass-border);
+            }
+            .nav-links.active { right: 0; }
+            .hamburger { display: block; z-index: 1001; }
+            .img-box { width: 300px; height: 300px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader-circle"></div>
+        <div class="loader-text">AMEENA<span style="color:var(--accent)">.</span></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="container nav-container">
+            <a href="#" class="logo">Ameena<span style="color:var(--accent)">.</span></a>
+            <ul class="nav-links">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#projects">Work</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="glow-bg"></div>
+        <div class="container hero-wrapper">
+            <div class="hero-content reveal">
+                <span class="hero-subtitle">HELLO, I'M AMEENA</span>
+                <h1 class="hero-title">Web Developer & <br><span class="gradient-text">AI Enthusiast</span></h1>
+                <p class="hero-desc">
+                    I build premium, high-performance websites and integrate modern AI solutions. Based in Karachi, helping businesses stand out globally.
+                </p>
+                <div class="hero-btns">
+                    <a href="#projects" class="btn btn-primary">View Work</a>
+                    <a href="#contact" class="btn btn-outline">Contact Me</a>
+                </div>
+            </div>
+            <div class="hero-image reveal">
+                <div class="img-box">
+                    <!-- Placeholder Profile Image -->
+                    <img src="img.jpg.jpeg" alt="Ameena Profile" class="main-img">
+                    
+                    <!-- Floating Cards -->
+                    <div class="tech-card tc-1">
+                        <i class="fa-solid fa-code"></i>
+                        <span>Web Dev</span>
+                    </div>
+                    <div class="tech-card tc-2">
+                        <i class="fa-solid fa-brain"></i>
+                        <span>Artificial Intelligence</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>About Me</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="about-grid reveal">
+                <div class="about-text">
+                    <p>
+                        I am a Computer Science student specializing in <strong>Front-End Development and Artificial Intelligence</strong>. My passion lies in bridging the gap between creative design and logical functionality.
+                    </p>
+                    <p>
+                        Whether it's a sleek portfolio for a Fiverr client or a complex business solution for a local Karachi company, I focus on <strong>aesthetics, speed, and user experience</strong>. I don't just write code; I build digital identities.
+                    </p>
+                </div>
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <h3>20+</h3>
+                        <p>Projects Done</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>100%</h3>
+                        <p>Satisfaction</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="bg-alt">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>My Services</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="services-grid">
+                <!-- Service 1 -->
+                <div class="service-card reveal">
+                    <div class="icon-circle"><i class="fa-solid fa-laptop-code"></i></div>
+                    <h3>Portfolio Websites</h3>
+                    <p>Modern, responsive personal portfolios to help you land your next job or client.</p>
+                </div>
+                <!-- Service 2 -->
+                <div class="service-card reveal">
+                    <div class="icon-circle"><i class="fa-solid fa-store"></i></div>
+                    <h3>Business Websites</h3>
+                    <p>Professional websites for local businesses in Pakistan to increase online sales.</p>
+                </div>
+                <!-- Service 3 -->
+                <div class="service-card reveal">
+                    <div class="icon-circle"><i class="fa-solid fa-layer-group"></i></div>
+                    <h3>Landing Pages</h3>
+                    <p>High-converting landing pages designed specifically for marketing campaigns.</p>
+                </div>
+                <!-- Service 4 -->
+                <div class="service-card reveal">
+                    <div class="icon-circle"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <h3>AI & Animations</h3>
+                    <p>Integrating basic AI features and smooth GSAP animations for a 'Wow' factor.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Featured Work</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="projects-grid">
+                <!-- Project 1 -->
+                <div class="project-card reveal">
+                    <div class="project-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600" alt="Dashboard">
+                        <div class="project-overlay">
+                            <a href="#" class="btn-icon"><i class="fa-solid fa-link" style="color:white; font-size:1.5rem;"></i></a>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3>E-Commerce Dashboard</h3>
+                        <p>A responsive admin panel with dark mode and data charts.</p>
+                        <div class="tags"><span>HTML</span><span>CSS</span><span>JS</span></div>
+                    </div>
+                </div>
+                <!-- Project 2 -->
+                <div class="project-card reveal">
+                    <div class="project-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1522542550221-31fd19575a2d?auto=format&fit=crop&w=600" alt="Landing Page">
+                        <div class="project-overlay">
+                            <a href="#" class="btn-icon"><i class="fa-solid fa-link" style="color:white; font-size:1.5rem;"></i></a>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3>AI Agency Landing</h3>
+                        <p>Futuristic landing page with glassmorphism effects.</p>
+                        <div class="tags"><span>UI/UX</span><span>Design</span></div>
+                    </div>
+                </div>
+                <!-- Project 3 -->
+<div class="project-card reveal">
+    <div class="project-img-wrapper">
+        <!-- Image: A futuristic robot/human hand connection representing AI -->
+        <img src="https://images.unsplash.com/photo-1531746790731-6c087fecd65a?auto=format&fit=crop&w=600&q=80" alt="AI Chatbot">
+        <div class="project-overlay">
+            <a href="#" class="btn-icon"><i class="fa-solid fa-link" style="color:white; font-size:1.5rem;"></i></a>
+        </div>
+    </div>
+    <div class="project-info">
+        <h3>AI Chatbot Assistant</h3>
+        <p>A smart conversational bot powered by OpenAI API that answers customer queries in real-time.</p>
+        <div class="tags">
+            <span>Python</span>
+            <span>React</span>
+            <span>OpenAI API</span>
+        </div>
+    </div>
+</div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="bg-alt">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Technical Skills</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="skills-container reveal">
+                <div class="skill-item">
+                    <div class="skill-header"><span>HTML5 & CSS3</span><span>95%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-width="95%"></div></div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-header"><span>JavaScript (ES6+)</span><span>85%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-width="85%"></div></div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-header"><span>UI/UX Design (Figma)</span><span>80%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-width="80%"></div></div>
+                </div>
+               <div class="skill-item">
+    <div class="skill-header">
+        <span>Python (AI & Automation)</span>
+        <span>78%</span>
+    </div>
+    <div class="progress-track">
+        <!-- The data-width attribute controls the animation -->
+        <div class="progress-fill" data-width="78%"></div>
+    </div>
+</div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Let's Work Together</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="contact-box reveal">
+                <div class="contact-details">
+                    <h3>Get In Touch</h3>
+                    <p style="margin-bottom:30px; color:var(--text-muted);">
+                        I'm currently available for freelance work on Fiverr or direct contracts. Let's discuss your project.
+                    </p>
+                    <div class="contact-item">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>ameena.dev@gmail.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa-brands fa-whatsapp"></i>
+                        <span>+92 564 3186558</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>Karachi, Pakistan</span>
+                    </div>
+                    <!-- Direct WhatsApp Button -->
+                    <a href="https://wa.me/923001234567" target="_blank" class="btn btn-primary" style="margin-top:20px; background:#25D366;">
+                        <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
+                    </a>
+                </div>
+
+                <form class="contact-form" onsubmit="event.preventDefault(); alert('Thanks for the message! I will reply shortly.');">
+                    <div class="form-group">
+                        <input type="text" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea rows="5" placeholder="Your Message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Ameena. All Rights Reserved. Built with ❤️ in Karachi.</p>
+        <div style="margin-top:10px; font-size:1.2rem;">
+            <a href="#" style="margin:0 10px"><i class="fa-brands fa-github"></i></a>
+            <a href="#" style="margin:0 10px"><i class="fa-brands fa-linkedin"></i></a>
+            <a href="#" style="margin:0 10px"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Preloader Handling
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                setTimeout(() => { preloader.style.display = 'none'; }, 500);
+            }, 1200);
+
+            // 2. Sticky Navbar & Mobile Menu
+            const navbar = document.querySelector('nav');
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) navbar.classList.add('scrolled');
+                else navbar.classList.remove('scrolled');
+            });
+
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                // Toggle icon
+                const icon = hamburger.querySelector('i');
+                if(navLinks.classList.contains('active')){
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-xmark');
+                } else {
+                    icon.classList.remove('fa-xmark');
+                    icon.classList.add('fa-bars');
+                }
+            });
+
+            // Close menu when clicking a link
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                    hamburger.querySelector('i').classList.remove('fa-xmark');
+                    hamburger.querySelector('i').classList.add('fa-bars');
+                });
+            });
+
+            // 3. Scroll Reveal Animation (Intersection Observer)
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        
+                        // Animate Progress Bars only when visible
+                        if(entry.target.classList.contains('skills-container')) {
+                            const bars = document.querySelectorAll('.progress-fill');
+                            bars.forEach(bar => {
+                                bar.style.width = bar.getAttribute('data-width');
+                            });
+                        }
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
